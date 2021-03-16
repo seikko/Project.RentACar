@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Project.BLL\Project.BLL.csproj" />
+    <ProjectReference Include="..\Project.CORE\Project.CORE.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tools\Images\" />
+  </ItemGroup>
+
+
+</Project>
