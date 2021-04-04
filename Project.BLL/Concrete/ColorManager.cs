@@ -2,11 +2,13 @@
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
 using Project.ENTITIES.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Project.BLL.Concrete
@@ -21,6 +23,7 @@ namespace Project.BLL.Concrete
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color item)
         {
+            IResult result = BusinessRules.Run(CheckIfColorNameExists(item.ColorName));
             _colorDal.Add(item);
             return new SuccessResult(Messanges.ProductAdded);
         }
@@ -45,6 +48,15 @@ namespace Project.BLL.Concrete
         {
             _colorDal.Update(item);
             return new SuccessResult(Messanges.ProductModified);
+        }
+        private IResult CheckIfColorNameExists(string colorName)
+        {
+            var result = _colorDal.GetAll().Any();
+            if(result)
+            {
+                new ErrorResult(Messanges.ColornNameAlReadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

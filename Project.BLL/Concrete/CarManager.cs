@@ -1,7 +1,9 @@
 ﻿using Project.BLL.Abstract;
+using Project.BLL.BusinessAspect.Autofac;
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
 using Project.ENTITIES.Concrete;
@@ -21,33 +23,27 @@ namespace Project.BLL.Concrete
             _carDal = carDal;
         }
 
+        [SecuredOperation("car.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car item)
         {
-            if(item.Description.Length>=2)
-            {
-                if (item.DailyPrice>0)
-                {
-                    _carDal.Add(item);
-                    return new SuccessResult(Messanges.ProductAdded);
-                }
-              
-            }
-            return new ErrorResult(Messanges.NoProductAdded);
-          
-             
+            
+            IResult result = BusinessRules.Run(CheckIfCarNameExists(item.CarName));
+
+            _carDal.Add(item); 
+            return new SuccessResult(Messanges.ProductAdded);
         }
 
         public IResult Delete(Car item)
         {
             _carDal.Delete(item);
             return new SuccessResult(Messanges.ProductDeleted);
-           
+
         }
 
         public IDataResult<List<Car>> GetAll()
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messanges.ProductListed);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messanges.ProductListed);
         }
 
         public IDataResult<List<Car>> GetByPrice(decimal min, decimal max)
@@ -76,5 +72,16 @@ namespace Project.BLL.Concrete
             return new SuccessResult(Messanges.ProductModified);
 
         }
+        private IResult CheckIfCarNameExists(string carName)
+        {
+            var result = _carDal.GetAll(x => x.CarName == carName).Any();
+            if(result)
+            {
+                return new ErrorResult(Messanges.CarNameAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+       
+        }
     }
-}
+

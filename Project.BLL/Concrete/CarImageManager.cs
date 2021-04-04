@@ -2,11 +2,13 @@
 using Project.BLL.Abstract;
 using Project.BLL.Constants;
 using Project.CORE.Helpers;
+using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
 using Project.ENTITIES.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
@@ -21,6 +23,7 @@ namespace Project.BLL.Concrete
         }
         public IResult Add(IFormFile file, CarImage image)
         {
+            IResult result = BusinessRules.Run(CheckIfImageCountExists(image.ImagePath));
           image.ImagePath = FileHelper.Add(file);
             image.Date = DateTime.Now;
             _carImageDal.Add(image);
@@ -55,6 +58,16 @@ namespace Project.BLL.Concrete
             image.Date = DateTime.Now;
             _carImageDal.Update(image);
             return new SuccessResult(Messanges.UpdatedCarImages);
+        }
+
+        private IResult CheckIfImageCountExists(string image)
+        {
+            var result = _carImageDal.GetAll().Count();
+            if(result>5)
+            {
+                new ErrorResult(Messanges.AddedCarImageExists);
+            }
+            return new SuccessResult();
         }
 
         

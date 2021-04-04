@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Project.CORE.Entities.Concrete;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Project.BLL.Constants
@@ -55,5 +57,31 @@ namespace Project.BLL.Constants
         public static string DeletedCarImage = "Resim silindi";
 
         public static string UpdatedCarImages = "Resim güncellendi";
+
+        public static string CarNameAlreadyExists = "Aynı araç ismi bulunmaktadır";
+
+        public static string BrandNameAlreadyExists = "Aynı marka ismi bulunmaktadır";
+
+        public static string ColornNameAlReadyExists = "Aynı renk bulunmaktadır";
+
+        public static string CompanyAlReadyExists = "Aynı şirket ismi bulunmaktadır";
+
+        public static string EmailAlreadyExists = "Aynı e-mail  bulunmaktadır";
+
+        public static string AddedCarImageExists = "En fazla 5 resim ekleyebilirsiniz";
+
+        public static string AuthorizationDenied = "Giriş Başarısız";
+
+        public static string UserRegistered = "Kullanıcı kayıt oldu";
+
+        public static string UserNotFound = "Kullanıcı Bulunamadı";
+
+        public static string AccessTokenCreated = "Token Uretildi";
+
+        public static string UserAlreadyExists = "Kullanıcı zaten var";
+
+        public static string SuccessfulLogin = "Giriş Başarılı";
+
+        public static string  PasswordError = "Şifre Hatası";
     }
 }

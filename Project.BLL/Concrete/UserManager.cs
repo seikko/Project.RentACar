@@ -2,11 +2,14 @@
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.Entities.Concrete;
+using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
 using Project.ENTITIES.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Project.BLL.Concrete
@@ -14,37 +17,29 @@ namespace Project.BLL.Concrete
     public class UserManager : IUserService
     {
         IUserDal _userDal;
+
         public UserManager(IUserDal userDal)
         {
             _userDal = userDal;
         }
-        [ValidationAspect(typeof(UserValidator))]
-        public IResult Add(User item)
+
+        public IDataResult<List<OperationClaim>> GetClaims(User user)
         {
-            _userDal.Add(item);
+
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user),Messanges.GetUserListed);
+
+        }
+
+        public IResult Add(User user)
+        {
+            _userDal.Add(user);
+
             return new SuccessResult(Messanges.UserAdded);
         }
 
-        public IResult Delete(User item)
+        public IDataResult<User> GetByMail(string email)
         {
-            _userDal.Delete(item);
-            return new SuccessResult(Messanges.UserDeleted);
-        }
-
-        public IDataResult<List<User>> GetAll()
-        {
-            return new SuccessDataResult<List<User>>(_userDal.GetAll(), Messanges.UsersListed);
-        }
-
-        public IDataResult<List<User>> GetByID(int id)
-        {
-            return new SuccessDataResult<List<User>>(_userDal.GetAll(x => x.ID == id), Messanges.GetUserListed);
-        }
-
-        public IResult Update(User item)
-        {
-            _userDal.Update(item);
-            return new SuccessResult(Messanges.UserModified);
+            return new SuccessDataResult<User>(_userDal.Get(x => x.Email == email));
         }
     }
 }

@@ -2,11 +2,13 @@
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
 using Project.ENTITIES.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Project.BLL.Concrete
@@ -22,6 +24,7 @@ namespace Project.BLL.Concrete
         [ValidationAspect(typeof(BrandValidator))]
         public IResult Add(Brand item)
         {
+            IResult result = BusinessRules.Run(CheckIfBrandNameExists(item.BrandName));
             _brandDal.Add(item);
             return new SuccessResult(Messanges.ProductAdded);
         }
@@ -46,6 +49,15 @@ namespace Project.BLL.Concrete
         {
             _brandDal.Update(item);
             return new SuccessResult(Messanges.ProductModified);
+        }
+        private IResult CheckIfBrandNameExists(string brandName)
+        {
+            var result = _brandDal.GetAll(x => x.BrandName == brandName).Any();
+            if(result)
+            {
+                new ErrorResult(Messanges.BrandNameAlreadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

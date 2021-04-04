@@ -2,11 +2,13 @@
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
 using Project.ENTITIES.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Project.BLL.Concrete
@@ -21,6 +23,7 @@ namespace Project.BLL.Concrete
         [ValidationAspect(typeof(CustomerValidator))]
         public IResult Add(Customer item)
         {
+            IResult result = BusinessRules.Run(CheckIfEmailExists(item.CompanyName));
             _customerDal.Add(item);
             return new SuccessResult(Messanges.CustomerAdded);
         }
@@ -45,6 +48,15 @@ namespace Project.BLL.Concrete
         {
             _customerDal.Update(item);
             return new SuccessResult(Messanges.CustomerModified);
+        }
+        private IResult CheckIfEmailExists(string companyName)
+        {
+            var result = _customerDal.GetAll().Any();
+            if(result)
+            {
+                new ErrorResult(Messanges.CompanyAlReadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

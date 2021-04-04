@@ -1,4 +1,5 @@
 ﻿using Project.BLL.Concrete;
+using Project.CORE.Entities.Concrete;
 using Project.DAL.Concrete.EntityFramework;
 using Project.ENTITIES.Concrete;
 using System;
@@ -52,6 +53,7 @@ namespace Project.COREUI
             CarManager carManager = new CarManager(new EfCarDal());
             foreach (var item in carManager.GetCarDetail().Data)
             {
+                
                 Console.WriteLine(item.CarName);
                 Console.WriteLine(item.ColorName);
                 Console.WriteLine(item.Description);
@@ -78,8 +80,8 @@ namespace Project.COREUI
                 FirstName = "Engin",
                 LastName = "Demiroğ",
                 Email = "deneme@deneme.com",
-                Password = "123456"
-            });
+                //PasswordHash = 12
+            }) ;
         }
 
         private static void CustomerTest()

@@ -3,7 +3,9 @@ using Autofac.Extras.DynamicProxy;
 using Castle.DynamicProxy;
 using Project.BLL.Abstract;
 using Project.BLL.Concrete;
+using Project.CORE.Helpers;
 using Project.CORE.Utilities.Interceptors;
+using Project.CORE.Utilities.Security.JWT;
 using Project.DAL.Abstract;
 using Project.DAL.Concrete.EntityFramework;
 using System;
@@ -25,9 +27,6 @@ namespace Project.BLL.DependencyResolver.Autofac
             builder.RegisterType<ColorManager>().As<IColorService>().SingleInstance();
             builder.RegisterType<EfColorDal>().As<IColorDal>();
 
-            builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
-            builder.RegisterType<EfUserDal>().As<IUserDal>();
-
             builder.RegisterType<CustomerManager>().As<ICustomerService>().SingleInstance();
             builder.RegisterType<EfCustomerDal>().As<ICustomerDal>();
 
@@ -35,11 +34,19 @@ namespace Project.BLL.DependencyResolver.Autofac
             builder.RegisterType<EfRentalDal>().As<IRentalDal>();
 
 
+            builder.RegisterType<UserManager>().As<IUserService>();
+            builder.RegisterType<EfUserDal>().As<IUserDal>();
+
+            builder.RegisterType<AuthManager>().As<IAuthService>();
+            builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
+
+
 
             builder.RegisterType<CarImageManager>().As<ICarImageService>().SingleInstance();
             builder.RegisterType<EfCarImageDal>().As<ICarImageDal>();
 
-
+     
 
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();

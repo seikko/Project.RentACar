@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Project.CORE.Helpers
 {
-   public  class FileHelper
+    public class FileHelper
     {//TODO: Resim ekliyor ama burada if'e girip patlıyor.. Araştır.
         public static string Add(IFormFile file)
         {
