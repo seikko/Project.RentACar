@@ -2,7 +2,10 @@
 using Project.BLL.BusinessAspect.Autofac;
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
+using Project.CORE.Aspects.Autofac.Caching;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.CrossCuttingConcerns.Performance;
+using Project.CORE.CrossCuttingConcerns.Transcation;
 using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
@@ -25,6 +28,8 @@ namespace Project.BLL.Concrete
 
         [SecuredOperation("car.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
+        [CacheRemoveAspect("CarSerivce.Get")]
+        [PerformanceAspect(5)]//bu metod'un çalışması 5 saniyeyi geçerse beni uyar
         public IResult Add(Car item)
         {
             
@@ -34,6 +39,14 @@ namespace Project.BLL.Concrete
             return new SuccessResult(Messanges.ProductAdded);
         }
 
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Car car)
+        {
+            _carDal.Update(car);
+            _carDal.Add(car);
+            return new SuccessResult(Messanges.ProductModified);
+        }
+
         public IResult Delete(Car item)
         {
             _carDal.Delete(item);
@@ -41,6 +54,7 @@ namespace Project.BLL.Concrete
 
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messanges.ProductListed);
@@ -50,6 +64,7 @@ namespace Project.BLL.Concrete
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(x => x.DailyPrice <= min && x.DailyPrice >= max), Messanges.PrinceRangeListed);
         }
+        [CacheAspect]
 
         public IDataResult<List<Car>> GetCarByBrandID(int id)
         {
@@ -66,6 +81,7 @@ namespace Project.BLL.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(x => x.ColorID == id), Messanges.ColorListed);
         }
 
+        [CacheRemoveAspect("IProductService.Get")]//ICarService'bütün get'leri sileriz.
         public IResult Update(Car item)
         {
             _carDal.Update(item);

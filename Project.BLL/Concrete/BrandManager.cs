@@ -1,7 +1,10 @@
 ﻿using Project.BLL.Abstract;
+using Project.BLL.BusinessAspect.Autofac;
 using Project.BLL.Constants;
 using Project.BLL.ValidationRules.FluentValidation;
+using Project.CORE.Aspects.Autofac.Caching;
 using Project.CORE.Aspects.Autofac.Validation;
+using Project.CORE.CrossCuttingConcerns.Performance;
 using Project.CORE.Utilities.Business;
 using Project.CORE.Utilities.Results;
 using Project.DAL.Abstract;
@@ -21,7 +24,10 @@ namespace Project.BLL.Concrete
             _brandDal = brandDal;
         }
 
-        [ValidationAspect(typeof(BrandValidator))]
+        [SecuredOperation("brand.add,admin")]
+        [ValidationAspect(typeof(CarValidator))]
+        [CacheRemoveAspect("IBrandService.Get")]
+        [PerformanceAspect(5)]
         public IResult Add(Brand item)
         {
             IResult result = BusinessRules.Run(CheckIfBrandNameExists(item.BrandName));

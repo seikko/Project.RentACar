@@ -17,6 +17,7 @@ namespace Project.BLL.Abstract
         IResult Add(Car item);
         IResult Delete(Car item);
         IResult Update(Car item);
+        IResult AddTransactionalTest(Car car);
 
     }
 }
