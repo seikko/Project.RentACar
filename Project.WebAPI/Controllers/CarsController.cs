@@ -5,6 +5,7 @@ using Project.ENTITIES.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Project.WebAPI.Controllers
@@ -22,6 +23,7 @@ namespace Project.WebAPI.Controllers
         [HttpGet("getAllCar")]
         public IActionResult GetAll()
         {
+            //Thread.Sleep(5000);
             var result = _carService.GetAll();
             if (result.Success)
             {

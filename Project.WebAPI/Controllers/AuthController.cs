@@ -40,7 +40,7 @@ namespace Project.WebAPI.Controllers
             return BadRequest(result.Messange);
         }
 
-        [HttpPost("register")]//TODO :15.ders yeniden tekrar
+        [HttpPost("register")]
         public ActionResult Register(UserForRegisterDto userForRegisterDto)
         {
             var userExists = _authService.UserExists(userForRegisterDto.Email);

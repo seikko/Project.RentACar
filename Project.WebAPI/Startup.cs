@@ -33,6 +33,7 @@ namespace Project.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();//api'ýn service injectinýnýn yapýyoruz
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -64,9 +65,9 @@ namespace Project.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors(builder=> builder.AllowAnyOrigin());//API'burdan bir istek gelirse buna izin ver nasý bir istek gelirse bu adrese guvenýyorum demeketir.
             app.UseHttpsRedirection();
-
+            
             app.UseRouting();
             app.UseAuthentication();//MiddelLayer
 
